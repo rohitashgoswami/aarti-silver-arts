@@ -19,8 +19,13 @@ async function resolveDatabaseUri() {
 async function startServer() {
   try {
     const databaseUri = await resolveDatabaseUri();
-    await connectToDatabase(databaseUri);
-    await seedProductsIfEmpty();
+    try {
+      await connectToDatabase(databaseUri);
+      await seedProductsIfEmpty();
+      console.log("Connected to database successfully");
+    } catch (dbError) {
+      console.warn("Database connection failed, using fallback products:", dbError.message);
+    }
 
     app.listen(env.port, () => {
       console.log(`Server running on port ${env.port}`);
