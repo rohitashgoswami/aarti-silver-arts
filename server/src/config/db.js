@@ -4,9 +4,12 @@ export async function connectToDatabase(mongodbUri) {
   try {
     // Set connection timeout options
     const connectOptions = {
-      serverSelectionTimeoutMS: 3000,
-      socketTimeoutMS: 3000,
-      connectTimeoutMS: 3000,
+      serverSelectionTimeoutMS: 2000,
+      socketTimeoutMS: 2000,
+      connectTimeoutMS: 2000,
+      retryWrites: false,
+      maxPoolSize: 5,
+      minPoolSize: 2,
     };
 
     const connectionPromise = mongoose.connect(mongodbUri, connectOptions);
@@ -15,7 +18,7 @@ export async function connectToDatabase(mongodbUri) {
     await Promise.race([
       connectionPromise,
       new Promise((_, reject) => 
-        setTimeout(() => reject(new Error("Connection timeout")), 4000)
+        setTimeout(() => reject(new Error("Connection timeout")), 2500)
       )
     ]);
   } catch (error) {

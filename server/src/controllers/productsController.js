@@ -63,9 +63,12 @@ export async function getProducts(req, res, next) {
       createdAt: -1,
     });
 
+    res.set("Cache-Control", "public, max-age=300"); // Cache for 5 minutes
     return res.json(products);
   } catch (error) {
-    return res.json(filterFallbackProducts(req.query));
+    const fallbackData = filterFallbackProducts(req.query);
+    res.set("Cache-Control", "public, max-age=60"); // Cache fallback for 1 minute
+    return res.json(fallbackData);
   }
 }
 

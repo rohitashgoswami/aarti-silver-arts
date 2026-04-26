@@ -1,5 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 const ADMIN_TOKEN_KEY = "jaipur-silver-admin-token";
+const productsCache = new Map();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_URL}${path}`, {
@@ -42,7 +44,18 @@ export function getProducts(filters = {}) {
   });
 
   const queryString = params.toString() ? `?${params.toString()}` : "";
-  return request(`/products${queryString}`);
+  const cacheKey = `/products${queryString}`;
+  
+  // Check cache
+  const cached = productsCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return Promise.resolve(cached.data);
+  }
+  
+  return request(`/products${queryString}`).then((data) => {
+    productsCache.set(cacheKey, { data, timestamp: Date.now() });
+    return data;
+  });
 }
 
 export function getProductById(id) {
