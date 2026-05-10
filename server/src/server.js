@@ -18,8 +18,8 @@ async function resolveDatabaseUri() {
 
 async function startServer() {
   try {
-    const databaseUri = await resolveDatabaseUri();
     try {
+      const databaseUri = await resolveDatabaseUri();
       await connectToDatabase(databaseUri);
       await seedProductsIfEmpty();
       console.log("Connected to database successfully");
