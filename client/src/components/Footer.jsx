@@ -23,6 +23,8 @@ export default function Footer() {
           <div className="mt-4 space-y-2 text-sm leading-7 text-silver-700">
             <p>{business.addressLine1}</p>
             <p>{business.addressLine2}</p>
+            <p>{business.proprietor}</p>
+            <p>GST No. {business.gstNumber}</p>
             <p>{business.phone}</p>
             <a href={`mailto:${business.email}`}>{business.email}</a>
           </div>

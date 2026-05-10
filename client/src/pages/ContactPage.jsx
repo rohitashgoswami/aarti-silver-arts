@@ -21,6 +21,8 @@ export default function ContactPage() {
               <div className="space-y-3 text-sm leading-7 text-silver-700">
                 <p>{business.addressLine1}</p>
                 <p>{business.addressLine2}</p>
+                <p>{business.proprietor}</p>
+                <p>GST No. {business.gstNumber}</p>
                 <p>{business.phone}</p>
                 <a href={`mailto:${business.email}`} className="block">{business.email}</a>
               </div>
@@ -52,3 +54,4 @@ export default function ContactPage() {
     </>
   );
 }
+
