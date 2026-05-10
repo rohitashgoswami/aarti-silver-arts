@@ -58,6 +58,12 @@ function validateProductInput(payload) {
 
 export async function getProducts(req, res, next) {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      const fallbackData = filterFallbackProducts(req.query);
+      res.set("Cache-Control", "public, max-age=60"); // Cache fallback for 1 minute
+      return res.json(fallbackData);
+    }
+
     const products = await Product.find(buildProductFilters(req.query)).sort({
       featured: -1,
       createdAt: -1,
@@ -77,6 +83,10 @@ export async function getProductById(req, res, next) {
     const fallbackProduct = fallbackProducts.find((product) => product._id === req.params.id);
     if (fallbackProduct) {
       return res.json(fallbackProduct);
+    }
+
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(404).json({ message: "Product not found." });
     }
 
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
